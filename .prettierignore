@@ -1,0 +1,9 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+.agents/
+.codex/
+package-lock.json
+skills-lock.json
+.playwright-mcp/

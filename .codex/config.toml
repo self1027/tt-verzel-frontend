@@ -1,0 +1,4 @@
+[mcp_servers.playwright]
+command = "node"
+args = ["C:/www/front-verzel/node_modules/@playwright/mcp/cli.js", "--browser", "msedge", "--headless", "--isolated"]
+startup_timeout_sec = 30
