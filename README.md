@@ -2,7 +2,7 @@
 
 Frontend de uma plataforma de leilões: explore lotes, participe de disputas, acompanhe sua carteira e consulte comprovantes e auditoria pública.
 
-Construído com **React 19, TypeScript e Vite**, com interface responsiva, tema escuro e integração REST e Socket.IO.
+Construído com **React 19, TypeScript e Vite**, com interface responsiva, temas claro e escuro e integração REST e Socket.IO.
 
 ## Preview
 
@@ -10,22 +10,27 @@ Construído com **React 19, TypeScript e Vite**, com interface responsiva, tema 
 
 Catálogo público com busca, filtros por situação e valores, ordenação e destaque de lote.
 
-![Vitrine desktop com filtros, lote em destaque e catálogo de leilões](docs/screenshots/vitrine-desktop.png)
+| Tema escuro                                                                | Tema claro                                                                      |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| ![Vitrine de leilões no tema escuro](docs/screenshots/vitrine-desktop.png) | ![Vitrine de leilões no tema claro](docs/screenshots/vitrine-desktop-light.png) |
 
 ### Carteira e painel do leiloeiro
 
 | Carteira                                                                                         | Painel do leiloeiro                                                                                        |
 | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
 | ![Carteira com saldos, movimentações e depósito simulado](docs/screenshots/carteira-desktop.png) | ![Painel do leiloeiro com liquidações, lotes e seleção de produto](docs/screenshots/leiloeiro-desktop.png) |
+| ![Carteira no tema claro](docs/screenshots/carteira-desktop-light.png)                           | ![Painel do leiloeiro no tema claro](docs/screenshots/leiloeiro-desktop-light.png)                         |
 
 ### Também no celular
 
 <img src="docs/screenshots/arremates-mobile.png" alt="Meus lances e arremates no celular, com acesso ao lote e ao comprovante" width="300" />
+<img src="docs/screenshots/arremates-mobile-light.png" alt="Meus lances e arremates no celular, tema claro" width="300" />
 
-As capturas foram feitas no navegador com dados de demonstração e respostas de API simuladas. A vitrine registra uma etapa anterior da interface; as demais capturas vêm da suíte visual de conta. Não representam uma validação contra o backend real.
+As capturas mostram a interface atual nos dois temas, obtidas com Playwright e respostas de API simuladas. Não representam uma validação contra o backend real.
 
 ## Funcionalidades implementadas
 
+- **Aparência:** alternância acessível entre claro e escuro, preferência persistida e fallback para o tema do sistema, com respeito a movimento reduzido.
 - **Exploração:** vitrine, filtros, paginação, detalhe do lote, histórico de lances e contagem regressiva.
 - **Participação:** login, acesso por papel, envio de lances e acompanhamento de posição e arremates.
 - **Carteira:** saldo disponível, reservado e total, extrato e depósito simulado com chave de idempotência.
