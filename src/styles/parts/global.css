@@ -1,0 +1,76 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  min-width: 320px;
+  background: var(--surface-canvas);
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  color: var(--text-primary);
+  background: var(--surface-canvas);
+  font-size: 16px;
+  line-height: 1.5;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+a {
+  color: inherit;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+::selection {
+  color: var(--text-inverse);
+  background: var(--action-primary);
+}
+.skip-link {
+  position: fixed;
+  z-index: 10;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-160%);
+  clip-path: inset(50%);
+  padding: 10px 16px;
+  color: var(--text-inverse);
+  background: var(--action-primary);
+}
+.skip-link:focus {
+  clip-path: none;
+  transform: translateY(0);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
