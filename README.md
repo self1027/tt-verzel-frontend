@@ -4,6 +4,11 @@ Frontend de uma plataforma de leilões: explore lotes, participe de disputas, ac
 
 Construído com **React 19, TypeScript e Vite**, com interface responsiva, temas claro e escuro e integração REST e Socket.IO.
 
+## Deploys
+
+- [Aplicação web](https://auctionverzel.murilod.dev/)
+- [Documentação da API (Swagger UI)](https://api.auctionverzel.murilod.dev/docs/)
+
 ## Preview
 
 ### Vitrine de leilões
