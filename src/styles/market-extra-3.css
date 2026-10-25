@@ -1,0 +1,113 @@
+.market-intro .eyebrow {
+  color: var(--accent-soft);
+  margin-bottom: 8px;
+}
+.market-intro h1 {
+  margin: 0;
+  font-size: clamp(36px, 4.5vw, 60px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+.market-intro > p {
+  margin: 0;
+  color: var(--text-secondary);
+  max-width: 40ch;
+}
+.lifecycle-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.lifecycle-filters button {
+  min-height: 48px;
+  padding: 8px 0;
+  background: none;
+  color: var(--text-secondary);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+  cursor: pointer;
+}
+.lifecycle-filters button[aria-pressed='true'] {
+  color: var(--text-primary);
+  border-bottom-color: var(--action-primary);
+}
+.lifecycle-filters button:hover {
+  color: var(--text-primary);
+}
+.results-feedback {
+  color: var(--text-secondary);
+}
+.auction-card {
+  border-radius: 8px;
+  overflow: hidden;
+}
+.auction-card-link:focus-visible {
+  outline-offset: -4px;
+}
+.hero-image-caption .status {
+  position: static;
+}
+.hero-photo {
+  padding-bottom: 64px;
+}
+.hero-photo img {
+  height: 280px;
+}
+.filter-bar input,
+.filter-bar select {
+  min-height: 46px;
+  font-size: 16px;
+}
+.text-button {
+  min-height: 44px;
+}
+@media (hover: none) {
+  .auction-card:hover .card-image {
+    min-height: 0;
+    min-width: 0;
+    transform: none;
+  }
+}
+.button:focus-visible,
+.auction-card-link:focus-visible .card-image {
+  min-height: 0;
+  min-width: 0;
+  transform: none;
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .auction-card:hover .card-image,
+  .button:active {
+    transform: none;
+  }
+}
+@media (max-width: 700px) {
+  .market-intro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 32px 0;
+  }
+  .desktop-break {
+    display: none;
+  }
+  .lifecycle-filters {
+    gap: 0 20px;
+  }
+  .hero {
+    margin-top: 0;
+  }
+  .hero-photo img {
+    height: 220px;
+  }
+  .hero-photo {
+    padding-bottom: 56px;
+  }
+}
+
+.market-page:focus {
+  outline: none;
+}
