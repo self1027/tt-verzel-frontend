@@ -1,0 +1,19 @@
+.recovery-notice {
+  margin-block: 20px;
+  overflow-wrap: anywhere;
+}
+.recovery-notice h2 {
+  font-size: 22px;
+  margin-block: 0 12px;
+}
+.recovery-values {
+  display: grid;
+  gap: 12px;
+  margin-block: 20px;
+}
+.recovery-values dd {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

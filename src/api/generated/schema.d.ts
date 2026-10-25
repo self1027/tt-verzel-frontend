@@ -508,6 +508,21 @@ export interface components {
       /** Format: date-time */
       endsAt?: string
     }
+    AuctionRecovery: {
+      reason: string
+      /** @enum {unknown} */
+      state: 'PENDING' | 'RELEASED' | 'COMPENSATION_REQUIRED'
+      /** Format: date-time */
+      detectedAt: string
+      /** Format: date-time */
+      targetAt: string
+      completedAt: string | null
+      attempts: number
+      lastError: string | null
+      remainingReservedCents: components['schemas']['NonnegativeCents']
+      releasedCents: components['schemas']['NonnegativeCents']
+      capturedCents: components['schemas']['NonnegativeCents']
+    }
     Auction: {
       /** Format: uuid */
       id: string
@@ -529,6 +544,9 @@ export interface components {
       updatedAt: string
       productSnapshot: components['schemas']['ProductSnapshot']
       lifecycleState: components['schemas']['LifecycleState']
+      recovery?: components['schemas']['AuctionRecovery'] | null
+      /** @enum {unknown} */
+      cancellationReason?: 'SELLER_REQUEST' | 'AUDIT_TAMPERED' | null
     }
     PublicBid: {
       /** Format: uuid */
