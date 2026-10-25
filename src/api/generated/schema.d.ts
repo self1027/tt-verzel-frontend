@@ -1438,3 +1438,107 @@ export interface operations {
       }
       400: components['responses']['Error']
       401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions_id_audit: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuditVerification']
+        }
+      }
+      400: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+      /** @description Verification unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuditVerification']
+        }
+      }
+    }
+  }
+  get_auctions_id_audit_events: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        /** @description Exclusive event sequence cursor, default 0. EVENT_PAGE_ONLY is not verification. */
+        after?: components['schemas']['NonnegativeCents']
+      }
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuditPage']
+        }
+      }
+      400: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions_id_receipt: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            receipt: components['schemas']['PublicReceipt']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+}
