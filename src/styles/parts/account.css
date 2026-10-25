@@ -78,7 +78,7 @@ button:disabled {
 .feedback-error {
   padding: 12px 16px;
   border-left: 3px solid var(--status-pending);
-  color: #ffd178;
+  color: var(--text-error);
   background: var(--surface-deep);
   overflow-wrap: anywhere;
 }
@@ -229,11 +229,39 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 .balance-strip > div:first-child {
-  border-left: 3px solid var(--action-primary);
+  border-left: 3px solid var(--brand-emphasis);
   padding-left: 20px;
 }
 .session-actions {
   justify-self: end;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-control);
+  color: var(--text-primary);
+  background: var(--surface-raised);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-deep);
+}
+
+@media (max-width: 380px) {
+  .session-actions {
+    gap: 8px;
+  }
+  .header-inner {
+    column-gap: 8px;
+  }
 }
 @media (max-width: 700px) {
   .balance-strip {
@@ -422,9 +450,10 @@ button:disabled {
   color: var(--text-secondary);
   border: 1px solid var(--border-control);
   transform: none;
+  box-shadow: none;
 }
 .form-panel .feedback-error {
-  color: #ffd178;
+  color: var(--text-error);
 }
 .account-page,
 .form-panel,

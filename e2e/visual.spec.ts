@@ -2,28 +2,37 @@
 import { login, mockAccountApi } from './fixtures'
 async function inspect(page: Page, name: string) {
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
-  for (const width of [375, 768, 1440]) {
-    await page.setViewportSize({ width, height: 1000 })
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.evaluate(async () => {
-      ;(document.activeElement as HTMLElement)?.blur()
-      window.scrollTo(0, 0)
-      await document.fonts.ready
-    })
-    expect(
-      await page.evaluate(() => document.documentElement.scrollWidth),
-    ).toBeLessThanOrEqual(width)
-    if (name === 'room' && width === 375) {
-      const title = await page.locator('.detail-title-row').boundingBox()
-      const trading = await page.locator('.detail-aside').boundingBox()
-      const history = await page.locator('.detail-history').boundingBox()
-      expect(title!.y).toBeLessThan(trading!.y)
-      expect(trading!.y).toBeLessThan(history!.y)
+  for (const theme of ['dark', 'light']) {
+    const toggle = page.getByRole('button', { name: 'Tema escuro' })
+    if (
+      (await toggle.getAttribute('aria-pressed')) !== String(theme === 'dark')
+    ) {
+      await toggle.click()
     }
-    await page.screenshot({
-      path: `.playwright-mcp/final-${name}-${width}.png`,
-      fullPage: true,
-    })
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.evaluate(async () => {
+        ;(document.activeElement as HTMLElement)?.blur()
+        window.scrollTo(0, 0)
+        await document.fonts.ready
+      })
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBeLessThanOrEqual(width)
+      if (name === 'room' && width === 375) {
+        const title = await page.locator('.detail-title-row').boundingBox()
+        const trading = await page.locator('.detail-aside').boundingBox()
+        const history = await page.locator('.detail-history').boundingBox()
+        expect(title!.y).toBeLessThan(trading!.y)
+        expect(trading!.y).toBeLessThan(history!.y)
+      }
+      await page.screenshot({
+        path: `.playwright-mcp/final-${name}-${theme}-${width}.png`,
+        fullPage: true,
+      })
+    }
   }
 }
 test('bidder screens reflow and link to public evidence', async ({ page }) => {

@@ -5,6 +5,8 @@
 
 :root {
   color-scheme: dark;
+  color: var(--text-primary);
+  background: var(--surface-canvas);
   font-family: 'Hind Madurai', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,12 +21,16 @@
   --text-inverse: #15191e;
   --action-primary: #cbfa05;
   --action-primary-hover: #d9ff45;
+  --action-border: #cbfa05;
   --accent-soft: #9fe870;
   --focus-ring: #cbfa05;
   --status-live: #9fe870;
   --status-scheduled: #b9c0cb;
   --status-pending: #fbce07;
   --status-terminal: #b9c0cb;
+  --text-error: #ffd178;
+  --brand-emphasis: #cbfa05;
+  --brand-ink: #15191e;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -37,4 +43,25 @@
   --radius-control: 4px;
   --radius-card: 16px;
   --motion-fast: 160ms;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --surface-canvas: #f4f5f7;
+  --surface-raised: #ffffff;
+  --surface-deep: #e9e7f0;
+  --surface-inverse: #15191e;
+  --border-control: #727b89;
+  --border-subtle: #c4c9d1;
+  --text-primary: #15191e;
+  --text-secondary: #505967;
+  --accent-soft: #356515;
+  --focus-ring: #355b00;
+  --status-live: #356515;
+  --status-scheduled: #505967;
+  --status-pending: #805100;
+  --status-terminal: #505967;
+  --text-error: #854400;
+  --brand-emphasis: #426200;
+  --action-border: #426200;
 }

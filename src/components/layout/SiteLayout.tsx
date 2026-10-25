@@ -1,5 +1,6 @@
 import { useSession, endSession } from '@/features/auth/session'
 import { Link, NavLink, Outlet } from 'react-router'
+import { ThemeToggle } from './ThemeToggle'
 
 export function SiteLayout() {
   const session = useSession()
@@ -33,6 +34,7 @@ export function SiteLayout() {
             ) : null}
           </nav>
           <div className="session-actions">
+            <ThemeToggle />
             {session ? (
               <>
                 <span className="session-name">{session.user.displayName}</span>

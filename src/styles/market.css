@@ -37,7 +37,7 @@
   letter-spacing: -2px;
 }
 .brand-mark span {
-  color: var(--surface-deep);
+  color: var(--brand-ink);
 }
 .brand-name {
   display: flex;
@@ -70,7 +70,7 @@
 }
 .main-nav a[aria-current='page'] {
   color: var(--text-primary);
-  border-color: var(--action-primary);
+  border-color: var(--brand-emphasis);
 }
 .login-soon {
   justify-self: end;
@@ -203,6 +203,7 @@
 .button-primary {
   color: var(--text-inverse);
   background: var(--action-primary);
+  box-shadow: inset 0 0 0 1px var(--action-border);
 }
 .button-primary:hover {
   background: var(--action-primary-hover);
@@ -227,7 +228,7 @@
   font-size: 11px;
 }
 .hero-index span:first-child {
-  color: var(--action-primary);
+  color: var(--brand-emphasis);
   font-weight: 700;
 }
 .hero-index-rule {
@@ -313,7 +314,7 @@
 .filter-error {
   grid-column: 1 / -1;
   margin: 0;
-  color: #ffd178;
+  color: var(--text-error);
   font-size: 13px;
 }
 .auction-grid {
@@ -459,7 +460,7 @@
   background: var(--surface-deep);
 }
 .empty-mark {
-  color: var(--action-primary);
+  color: var(--brand-emphasis);
   font-size: 58px;
   font-weight: 700;
   letter-spacing: -0.08em;
@@ -684,7 +685,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  color: #ffd178;
+  color: var(--text-error);
 }
 .bid-list {
   margin: 0;
@@ -812,7 +813,7 @@
 .refresh-note {
   margin: 0;
   padding: 12px;
-  color: #ffd178;
+  color: var(--text-error);
   font-size: 13px;
   border-left: 2px solid var(--status-pending);
 }
@@ -1052,7 +1053,7 @@
 }
 .lifecycle-filters button[aria-pressed='true'] {
   color: var(--text-primary);
-  border-bottom-color: var(--action-primary);
+  border-bottom-color: var(--brand-emphasis);
 }
 .lifecycle-filters button:hover {
   color: var(--text-primary);

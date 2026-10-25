@@ -1,4 +1,3 @@
-import '@/styles/parts/tokens.css'
 import '@/styles/parts/global.css'
 import '@/styles/market.css'
 import '@/styles/parts/account.css'
