@@ -136,6 +136,32 @@ export function AuctionsPage() {
     featuredImage && /^https?:\/\//i.test(featuredImage)
       ? featuredImage
       : undefined
+  const hasFilters = Boolean(
+    search.q || search.minPriceCents || search.maxPriceCents,
+  )
+  const tabMessage =
+    search.lifecycleState === 'FINALIZING'
+      ? {
+          description: 'O prazo terminou e o resultado está sendo processado.',
+          title: hasFilters
+            ? 'Nenhum lote em encerramento corresponde aos filtros.'
+            : 'Nenhum lote em encerramento agora.',
+          empty: hasFilters
+            ? 'Ajuste a busca ou os valores para consultar outros lotes nesta etapa.'
+            : 'Quando um lote chegar ao fim do prazo, ele aparecerá aqui enquanto o encerramento estiver em processamento.',
+        }
+      : search.lifecycleState === 'SETTLED'
+        ? {
+            description:
+              'Esta aba reúne os lotes arrematados com liquidação concluída.',
+            title: hasFilters
+              ? 'Nenhum arremate corresponde aos filtros.'
+              : 'Nenhum arremate finalizado por aqui ainda.',
+            empty: hasFilters
+              ? 'Ajuste a busca ou os valores. Lotes encerrados sem ofertas ficam na aba “Encerrados sem lances”.'
+              : 'Os lotes aparecerão aqui após a conclusão do arremate. Lotes encerrados sem ofertas ficam na aba “Encerrados sem lances”.',
+          }
+        : undefined
 
   return (
     <main id="main-content" className="market-page" tabIndex={-1}>
@@ -179,9 +205,12 @@ export function AuctionsPage() {
           <div>
             <p className="eyebrow">Catálogo público</p>
             <h2 id="auction-heading">
-              {query.data?.total === 0
-                ? 'O próximo lote ainda não chegou.'
-                : 'Explore os leilões'}
+              {tabMessage
+                ? states.find((state) => state.value === search.lifecycleState)
+                    ?.label
+                : query.data?.total === 0
+                  ? 'O próximo lote ainda não chegou.'
+                  : 'Explore os leilões'}
             </h2>
           </div>
           {query.data ? (
@@ -207,6 +236,9 @@ export function AuctionsPage() {
             </button>
           ))}
         </div>
+        {tabMessage ? (
+          <p className="results-feedback">{tabMessage.description}</p>
+        ) : null}
         <form
           className="filter-bar"
           onSubmit={applySearch}
@@ -333,17 +365,21 @@ export function AuctionsPage() {
             </button>
           </p>
         ) : null}
-        {query.data && auctions.length === 0 ? (
+        {query.isSuccess && auctions.length === 0 ? (
           <div className="empty-state">
             <span className="empty-mark" aria-hidden="true">
               V/
             </span>
             <div>
-              <p className="eyebrow">Nenhum resultado por aqui</p>
-              <h2>Amplie sua busca.</h2>
+              <p className="eyebrow">
+                {tabMessage
+                  ? 'Consulta concluída'
+                  : 'Nenhum resultado por aqui'}
+              </p>
+              <h2>{tabMessage?.title ?? 'Amplie sua busca.'}</h2>
               <p>
-                Altere os filtros para encontrar outros lotes. A lista mostra
-                apenas leilões publicados.
+                {tabMessage?.empty ??
+                  'Altere os filtros para encontrar outros lotes. A lista mostra apenas leilões publicados.'}
               </p>
               <button
                 className="text-button"
@@ -354,7 +390,9 @@ export function AuctionsPage() {
                   setSearchParams('')
                 }}
               >
-                Limpar filtros
+                {tabMessage && !hasFilters
+                  ? 'Explorar leilões ao vivo'
+                  : 'Limpar filtros'}
               </button>
             </div>
           </div>

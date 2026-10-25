@@ -1,6 +1,72 @@
 import { expect, test } from '@playwright/test'
 import { auctionId, auction, mockPublicApi } from './fixtures'
 
+test('contains large product images inside their frames at every viewport', async ({
+  page,
+}) => {
+  await mockPublicApi(page)
+  const imageUrl = 'https://images.example.test/large-product.svg'
+  const illustrated = {
+    ...auction,
+    productSnapshot: { ...auction.productSnapshot, imageUrl },
+  }
+  await page.route(imageUrl, (route) =>
+    route.fulfill({
+      contentType: 'image/svg+xml',
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="3200"><rect width="2400" height="3200" fill="red"/></svg>',
+    }),
+  )
+  await page.route('http://localhost:3000/auctions**', (route) => {
+    const path = new URL(route.request().url()).pathname
+    if (path === `/auctions/${auctionId}`)
+      return route.fulfill({ json: { auction: illustrated } })
+    if (path === '/auctions')
+      return route.fulfill({
+        json: {
+          auctions: [
+            illustrated,
+            { ...illustrated, id: '2e43c884-7598-4e25-aa3e-36e8ea5f9a18' },
+          ],
+          total: 2,
+          limit: 12,
+          skip: 0,
+        },
+      })
+    return route.fallback()
+  })
+  for (const width of [375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const path of ['/', `/auctions/${auctionId}`]) {
+      await page.goto(path)
+      const images = page.locator('.hero-photo img, .card-image, .detail-image')
+      await expect(images.first()).toBeVisible()
+      await expect
+        .poll(() =>
+          images.evaluateAll((nodes) =>
+            nodes.every((node) => {
+              const image = node as HTMLImageElement
+              const frame = image.parentElement!
+              const rect = image.getBoundingClientRect()
+              const bounds = frame.getBoundingClientRect()
+              const style = getComputedStyle(frame)
+              return (
+                image.complete &&
+                image.naturalWidth > 0 &&
+                rect.left >= bounds.left + parseFloat(style.paddingLeft) - 1 &&
+                rect.right <=
+                  bounds.right - parseFloat(style.paddingRight) + 1 &&
+                rect.top >= bounds.top + parseFloat(style.paddingTop) - 1 &&
+                rect.bottom <=
+                  bounds.bottom - parseFloat(style.paddingBottom) + 1
+              )
+            }),
+          ),
+        )
+        .toBe(true)
+    }
+  }
+})
+
 test('filters real-contract auction results and opens public details', async ({
   page,
 }) => {
@@ -53,6 +119,37 @@ test('starts with live lots and separates scheduled and closed lots without canc
     page.getByRole('button', { name: 'Agendados', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('option', { name: 'Cancelados' })).toHaveCount(0)
+})
+
+test('explains empty finalizing and settled tabs and distinguishes active filters', async ({
+  page,
+}) => {
+  await mockPublicApi(page, true)
+  await page.goto('/?lifecycleState=FINALIZING')
+  await expect(
+    page.getByRole('heading', { name: 'Nenhum lote em encerramento agora.' }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('O prazo terminou e o resultado está sendo processado.'),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Finalizados', exact: true }).click()
+  await expect(
+    page.getByRole('heading', {
+      name: 'Nenhum arremate finalizado por aqui ainda.',
+    }),
+  ).toBeVisible()
+  await expect(
+    page.getByText(
+      'Esta aba reúne os lotes arrematados com liquidação concluída.',
+    ),
+  ).toBeVisible()
+  await page.getByRole('searchbox').fill('câmera')
+  await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
+  await expect(
+    page.getByRole('heading', {
+      name: 'Nenhum arremate corresponde aos filtros.',
+    }),
+  ).toBeVisible()
 })
 
 test('validates price ranges and recovers from a request error', async ({
