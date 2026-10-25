@@ -958,3 +958,483 @@ export interface operations {
       400: components['responses']['Error']
       401: components['responses']['Error']
       403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+      502: components['responses']['Error']
+      503: components['responses']['Error']
+      504: components['responses']['Error']
+    }
+  }
+  get_catalog_products: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductPage']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_catalog_products_id: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            product: components['schemas']['ProductSnapshot']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_wallet: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            wallet: components['schemas']['Wallet']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_wallet_transactions: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WalletHistory']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  post_wallet_deposits: {
+    parameters: {
+      query?: never
+      header: {
+        /** @description Exactly one header. Reuse the key for retries of the same operation; changed amounts conflict. */
+        'Idempotency-Key': components['parameters']['IdempotencyKey']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AmountInput']
+      }
+    }
+    responses: {
+      /** @description Success */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            deposit: components['schemas']['Deposit']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+        /** @description Case-insensitive literal substring in stored productSnapshot.title, including literal %, _ and backslash. Empty matches every title. */
+        q?: string
+        lifecycleState?:
+          | 'SCHEDULED'
+          | 'LIVE'
+          | 'FINALIZING'
+          | 'CANCELLED'
+          | 'SETTLED'
+          | 'CLOSED_NO_BIDS'
+        /** @description Inclusive own-auction current bid amount or starting bid; exact BIGINT comparison. */
+        minPriceCents?: components['schemas']['NonnegativeCents']
+        /** @description Inclusive current price bound; must be >= minPriceCents. */
+        maxPriceCents?: components['schemas']['NonnegativeCents']
+        /** @description All ties use id ASC. Default createdAt DESC, id ASC. */
+        sort?: 'price_asc' | 'price_desc' | 'endsAt_asc' | 'endsAt_desc'
+        /** @description One-based. Cannot coexist with skip. (page-1)*limit must not exceed 2147483647. */
+        page?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuctionPage']
+        }
+      }
+      400: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  post_auctions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateAuction']
+      }
+    }
+    responses: {
+      /** @description Success */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            auction: components['schemas']['Auction']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions_mine: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+        /** @description Case-insensitive literal substring in stored productSnapshot.title, including literal %, _ and backslash. Empty matches every title. */
+        q?: string
+        lifecycleState?:
+          | 'SCHEDULED'
+          | 'LIVE'
+          | 'FINALIZING'
+          | 'CANCELLED'
+          | 'SETTLED'
+          | 'CLOSED_NO_BIDS'
+        /** @description Inclusive own-auction current bid amount or starting bid; exact BIGINT comparison. */
+        minPriceCents?: components['schemas']['NonnegativeCents']
+        /** @description Inclusive current price bound; must be >= minPriceCents. */
+        maxPriceCents?: components['schemas']['NonnegativeCents']
+        /** @description All ties use id ASC. Default createdAt DESC, id ASC. */
+        sort?: 'price_asc' | 'price_desc' | 'endsAt_asc' | 'endsAt_desc'
+        /** @description One-based. Cannot coexist with skip. (page-1)*limit must not exceed 2147483647. */
+        page?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuctionPage']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions_id: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            auction: components['schemas']['Auction']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  patch_auctions_id: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EditAuction']
+      }
+    }
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            auction: components['schemas']['Auction']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  post_auctions_id_cancel: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['Id']
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': Record<string, never>
+      }
+    }
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            auction: components['schemas']['Auction']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions_auctionId_bids: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+      }
+      header?: never
+      path: {
+        auctionId: components['parameters']['AuctionId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PublicBidPage']
+        }
+      }
+      400: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  post_auctions_auctionId_bids: {
+    parameters: {
+      query?: never
+      header: {
+        /** @description Exactly one header. Reuse the key for retries of the same operation; changed amounts conflict. */
+        'Idempotency-Key': components['parameters']['IdempotencyKey']
+      }
+      path: {
+        auctionId: components['parameters']['AuctionId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AmountInput']
+      }
+    }
+    responses: {
+      /** @description Success */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            bid: components['schemas']['BidReceipt']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auctions_bids_mine: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OwnBidPage']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
