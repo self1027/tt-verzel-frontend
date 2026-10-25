@@ -7,3 +7,8 @@ test-results/
 package-lock.json
 skills-lock.json
 .playwright-mcp/
+
+# Reference documents are preserved; contracts are backend-owned.
+AGENTS.md
+DESIGN.md
+contracts/

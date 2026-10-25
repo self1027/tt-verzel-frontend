@@ -9,3 +9,5 @@ test-results/
 *.log
 .DS_Store
 .playwright-mcp/
+.taste-skill/
+__pycache__/
