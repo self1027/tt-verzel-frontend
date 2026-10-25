@@ -569,7 +569,14 @@ export interface components {
       status: components['schemas']['AuctionStatus']
       isLeading: boolean
     }
+    /**
+     * @description Coverage of committed fields, not the result of external witness verification. Legacy v1 does not bind original seller or product content.
+     * @enum {string}
+     */
+    IntegrityCoverage: 'SELLER_PRODUCT_V2' | 'LEGACY_V1' | 'UNAVAILABLE'
+    /** @description Financial receipt. V2 validates local chain and seller/product binding in the same DB snapshot; external witness status is obtained separately from audit. Legacy receipts remain readable with limited coverage. */
     PublicReceipt: {
+      integrityCoverage: components['schemas']['IntegrityCoverage']
       /** Format: uuid */
       auctionId: string
       productSnapshot: {
@@ -597,6 +604,7 @@ export interface components {
       receiptUrl: string
     }
     AuditVerification: {
+      integrityCoverage: components['schemas']['IntegrityCoverage']
       /** Format: uuid */
       auctionId: string
       /** @enum {unknown} */
@@ -631,8 +639,11 @@ export interface components {
       createdAt: string
       previousHash: string
       eventHash: string
-      /** @constant */
-      hashVersion: 1
+      /**
+       * @description v1 keeps its original limited commitments; v2 genesis binds seller and complete snapshot digest. Mixed-version chains are invalid.
+       * @enum {integer}
+       */
+      hashVersion: 1 | 2
     }
     AuctionPage: {
       total: number
@@ -752,6 +763,7 @@ export interface operations {
       404: components['responses']['Error']
       409: components['responses']['Error']
       413: components['responses']['Error']
+      429: components['responses']['Error']
       500: components['responses']['Error']
     }
   }

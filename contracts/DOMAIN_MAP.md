@@ -1,5 +1,20 @@
 # Domain Map — contratos e regras de UI
 
+## Patch01: cobertura e versionamento criptográfico
+
+Novas cadeias são hashVersion2: AUCTION_CREATED compromete sellerRef e productHash
+originais, e replay/settlement/receipt conferem esses vínculos. Cadeias1 mantêm
+seus hashes e garantias anteriores; não recebem upgrade automático.
+AuditVerification e PublicReceipt agora incluem `integrityCoverage`:
+`SELLER_PRODUCT_V2 | LEGACY_V1 | UNAVAILABLE`. Esse campo informa cobertura,
+não equivale ao status do witness. VERIFIED legado não protege beneficiário
+original nem conteúdo do snapshot; a interface deve exibir essa limitação.
+Lotes legados com lances ainda não liquidados ficam DEFERRED/LEGACY_INTEGRITY_UNBOUND;
+sem lances, fechamento testemunhado sem transferência continua permitido em v1.
+Receipt com cadeia ausente/inválida/não suportada ou binding v2 divergente
+retorna409; recibo v1 válido continua acessível com cobertura limitada.
+Detalhes normativos: backend `docs/cryptographic-binding-v2.md` e OpenAPI atualizado.
+
 Evidências completas de entrada/saída HTTP: [API_MAP.md](API_MAP.md). Strings de montantes e sequências são especialmente relevantes para TypeScript.
 
 ## Estados de leilão

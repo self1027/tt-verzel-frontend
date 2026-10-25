@@ -37,8 +37,7 @@ export function ProductPicker({
     if (query === search) {
       if (source === 'local') void local.refetch()
       else void external.refetch()
-    }
-    else setSearch(query)
+    } else setSearch(query)
   }
   async function importItem(id: number) {
     if (pending) return
