@@ -478,3 +478,483 @@ export interface components {
     }
     WalletTransaction: {
       /** Format: uuid */
+      id: string
+      /** @enum {unknown} */
+      type: 'DEPOSIT' | 'AUCTION_SETTLEMENT'
+      /** Format: date-time */
+      createdAt: string
+      amountCents: string
+      entries: {
+        /** Format: uuid */
+        id: string
+        amountCents: string
+      }[]
+    }
+    CreateAuction: {
+      /** Format: uuid */
+      productSnapshotId: string
+      startingBidCents: components['schemas']['PositiveCents']
+      minIncrementCents: components['schemas']['PositiveCents']
+      /** Format: date-time */
+      startsAt: string
+      /** Format: date-time */
+      endsAt: string
+    }
+    EditAuction: {
+      startingBidCents?: components['schemas']['PositiveCents']
+      minIncrementCents?: components['schemas']['PositiveCents']
+      /** Format: date-time */
+      startsAt?: string
+      /** Format: date-time */
+      endsAt?: string
+    }
+    Auction: {
+      /** Format: uuid */
+      id: string
+      /** Format: uuid */
+      auctioneerId: string
+      /** Format: uuid */
+      productSnapshotId: string
+      currentBidId: string | null
+      startingBidCents: components['schemas']['PositiveCents']
+      minIncrementCents: components['schemas']['PositiveCents']
+      /** Format: date-time */
+      startsAt: string
+      /** Format: date-time */
+      endsAt: string
+      status: components['schemas']['AuctionStatus']
+      /** Format: date-time */
+      createdAt: string
+      /** Format: date-time */
+      updatedAt: string
+      productSnapshot: components['schemas']['ProductSnapshot']
+      lifecycleState: components['schemas']['LifecycleState']
+    }
+    PublicBid: {
+      /** Format: uuid */
+      id: string
+      /** Format: uuid */
+      auctionId: string
+      bidderRef: string
+      amountCents: components['schemas']['PositiveCents']
+      sequence: components['schemas']['Sequence']
+      /** Format: date-time */
+      createdAt: string
+    }
+    BidReceipt: {
+      /** Format: uuid */
+      id: string
+      /** Format: uuid */
+      auctionId: string
+      bidderRef: string
+      amountCents: components['schemas']['PositiveCents']
+      sequence: components['schemas']['Sequence']
+      /** Format: date-time */
+      createdAt: string
+      /** Format: date-time */
+      endsAt: string
+    }
+    OwnBid: {
+      /** Format: uuid */
+      id: string
+      /** Format: uuid */
+      auctionId: string
+      bidderRef: string
+      amountCents: components['schemas']['PositiveCents']
+      sequence: components['schemas']['Sequence']
+      /** Format: date-time */
+      createdAt: string
+      /** Format: date-time */
+      endsAt: string
+      status: components['schemas']['AuctionStatus']
+      isLeading: boolean
+    }
+    PublicReceipt: {
+      /** Format: uuid */
+      auctionId: string
+      productSnapshot: {
+        /** Format: uuid */
+        id: string
+        title: string
+        description: string | null
+        imageUrl: string | null
+        /** Format: date-time */
+        capturedAt: string
+      }
+      amountCents: components['schemas']['PositiveCents']
+      /** Format: date-time */
+      endsAt: string
+      /** Format: date-time */
+      settledAt: string
+      /** Format: uuid */
+      settlementId: string
+      winningBid: {
+        /** Format: uuid */
+        id: string
+        bidderRef: string
+      }
+      auditUrl: string
+      receiptUrl: string
+    }
+    AuditVerification: {
+      /** Format: uuid */
+      auctionId: string
+      /** @enum {unknown} */
+      status:
+        'VERIFIED' | 'PENDING_ANCHOR' | 'TAMPERED' | 'VERIFICATION_UNAVAILABLE'
+      localSequence: components['schemas']['Sequence']
+      externallyVerifiedSequence: components['schemas']['Sequence']
+      externalHeadSequence: components['schemas']['Sequence'] | null
+      /** @enum {unknown} */
+      operationalCoverage:
+        'CONSISTENT' | 'NOT_RECORDED' | 'DIVERGENT' | 'UNAVAILABLE'
+      reason: string | null
+    }
+    AuditEvent: {
+      /** Format: uuid */
+      id: string
+      /** Format: uuid */
+      auctionId: string
+      sequence: components['schemas']['Sequence']
+      /** @enum {unknown} */
+      eventType:
+        | 'AUCTION_CREATED'
+        | 'AUCTION_UPDATED'
+        | 'AUCTION_CANCELLED'
+        | 'BID_ACCEPTED'
+        | 'AUCTION_SETTLED'
+        | 'AUCTION_CLOSED_NO_BIDS'
+      payload: {
+        [key: string]: unknown
+      }
+      /** Format: date-time */
+      createdAt: string
+      previousHash: string
+      eventHash: string
+      /** @constant */
+      hashVersion: 1
+    }
+    AuctionPage: {
+      total: number
+      limit: number
+      skip: number
+      auctions: components['schemas']['Auction'][]
+      /** Format: date-time */
+      asOf: string
+    }
+    ProductPage: {
+      total: number
+      limit: number
+      skip: number
+      products: components['schemas']['ProductSnapshot'][]
+    }
+    ExternalProductPage: {
+      total: number
+      limit: number
+      skip: number
+      products: components['schemas']['ExternalProduct'][]
+    }
+    WalletHistory: {
+      total: number
+      limit: number
+      skip: number
+      transactions: components['schemas']['WalletTransaction'][]
+    }
+    PublicBidPage: {
+      total: number
+      limit: number
+      skip: number
+      bids: components['schemas']['PublicBid'][]
+      currentBid: components['schemas']['PublicBid'] | null
+      /** Format: date-time */
+      endsAt: string
+      status: components['schemas']['AuctionStatus']
+      /** Format: date-time */
+      asOf: string
+    }
+    OwnBidPage: {
+      total: number
+      limit: number
+      skip: number
+      bids: components['schemas']['OwnBid'][]
+      /** Format: date-time */
+      asOf: string
+    }
+    AuditPage:
+      | {
+          /** Format: uuid */
+          auctionId: string
+          events: components['schemas']['AuditEvent'][]
+          nextAfter: components['schemas']['Sequence']
+          limit: number
+          /** @constant */
+          proof: 'EVENT_PAGE_ONLY'
+        }
+      | {
+          /** Format: uuid */
+          auctionId: string
+          /** @constant */
+          status: 'TAMPERED'
+          reason: string
+          events: unknown[]
+        }
+  }
+  responses: {
+    /** @description Application or validation error; inspect error.code. 401 includes WWW-Authenticate:Bearer. Errors use Cache-Control:no-store. */
+    Error: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': components['schemas']['Error']
+      }
+    }
+  }
+  parameters: {
+    limit: number
+    skip: number
+    Id: string
+    ExternalId: number
+    AuctionId: string
+    /** @description Exactly one header. Reuse the key for retries of the same operation; changed amounts conflict. */
+    IdempotencyKey: string
+  }
+  requestBodies: never
+  headers: never
+  pathItems: never
+}
+export type $defs = Record<string, never>
+export interface operations {
+  post_auth_login: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LoginInput']
+      }
+    }
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Login']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_auth_me: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            user: components['schemas']['User']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+    }
+  }
+  get_catalog_external: {
+    parameters: {
+      query?: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+        category?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExternalProductPage']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+      502: components['responses']['Error']
+      503: components['responses']['Error']
+      504: components['responses']['Error']
+    }
+  }
+  get_catalog_external_search: {
+    parameters: {
+      query: {
+        limit?: components['parameters']['limit']
+        skip?: components['parameters']['skip']
+        q: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExternalProductPage']
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+      502: components['responses']['Error']
+      503: components['responses']['Error']
+      504: components['responses']['Error']
+    }
+  }
+  get_catalog_external_id: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['ExternalId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            product: components['schemas']['ExternalProduct']
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+      502: components['responses']['Error']
+      503: components['responses']['Error']
+      504: components['responses']['Error']
+    }
+  }
+  get_catalog_categories: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string[]
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
+      404: components['responses']['Error']
+      409: components['responses']['Error']
+      413: components['responses']['Error']
+      500: components['responses']['Error']
+      502: components['responses']['Error']
+      503: components['responses']['Error']
+      504: components['responses']['Error']
+    }
+  }
+  post_catalog_import_id: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['parameters']['ExternalId']
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': Record<string, never>
+      }
+    }
+    responses: {
+      /** @description Success */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            product: components['schemas']['ProductSnapshot']
+            created: boolean
+          }
+        }
+      }
+      /** @description Success */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            product: components['schemas']['ProductSnapshot']
+            created: boolean
+          }
+        }
+      }
+      400: components['responses']['Error']
+      401: components['responses']['Error']
+      403: components['responses']['Error']
