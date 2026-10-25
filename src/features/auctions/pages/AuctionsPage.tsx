@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, useSearchParams } from 'react-router'
 import { AuctionCard } from '../components/AuctionCard'
 import { AuctionStatus } from '../components/AuctionStatus'
+import { DemoScenario } from '../components/DemoScenario'
 import { getAuctions } from '../api/auctions'
 import { auctionKeys } from '../api/keys'
 import {
@@ -330,6 +331,7 @@ export function AuctionsPage() {
                   : 'Lote agendado'}
               </p>
               <h2 id="hero-title">{featured.productSnapshot.title}</h2>
+              <DemoScenario attributes={featured.productSnapshot.attributes} />
               <p className="hero-description">
                 {featured.productSnapshot.description ||
                   'Consulte os valores e horários deste lote.'}

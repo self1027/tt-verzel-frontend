@@ -6,6 +6,8 @@ import { useSession } from '@/features/auth/session'
 import { getWallet, walletKey } from '@/features/wallet/api'
 import { getReceipt } from '@/features/audit/api'
 import { AuctionStatus } from '@/features/auctions/components/AuctionStatus'
+import { AuctionRecoveryNotice } from '@/features/auctions/components/AuctionRecoveryNotice'
+import { DemoScenario } from '@/features/auctions/components/DemoScenario'
 import { auctionKeys } from '@/features/auctions/api/keys'
 import { formatCentsToBrl } from '@/features/auctions/utils/money'
 import { RequestState, Pagination } from '@/components/Feedback'
@@ -158,18 +160,25 @@ export function SellerPage() {
             {lots.data?.auctions.map((auction) => {
               const noBids = auction.currentBidId === null
               const canCancel =
+                !auction.recovery &&
                 noBids &&
                 (auction.lifecycleState === 'SCHEDULED' ||
                   auction.lifecycleState === 'LIVE')
               return (
                 <li key={auction.id}>
                   <div>
-                    <AuctionStatus state={auction.lifecycleState} />
+                    <AuctionStatus
+                      state={auction.lifecycleState}
+                      blocked={Boolean(auction.recovery)}
+                    />
                     <h3>
                       <Link to={`/auctions/${auction.id}`}>
                         {auction.productSnapshot.title}
                       </Link>
                     </h3>
+                    <DemoScenario
+                      attributes={auction.productSnapshot.attributes}
+                    />
                     <p className="muted">
                       Lance inicial:{' '}
                       {formatCentsToBrl(auction.startingBidCents)}
@@ -179,6 +188,7 @@ export function SellerPage() {
                       {new Date(auction.endsAt).toLocaleString('pt-BR')}
                     </p>
                     <SettlementResult auction={auction} />
+                    <AuctionRecoveryNotice auction={auction} />
                     <div className="row-actions">
                       <Link
                         className="text-link"
@@ -186,7 +196,9 @@ export function SellerPage() {
                       >
                         Ver lote
                       </Link>
-                      {noBids && auction.lifecycleState === 'SCHEDULED' ? (
+                      {noBids &&
+                      !auction.recovery &&
+                      auction.lifecycleState === 'SCHEDULED' ? (
                         <button
                           className="text-button"
                           onClick={() => {

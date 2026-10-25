@@ -19,12 +19,26 @@ export function BidForm({
   auction,
   snapshot,
   stale,
+  blocked = false,
 }: {
   auction: Auction
   snapshot: PublicBidPage | undefined
   stale: boolean
+  blocked?: boolean
 }) {
   const session = useSession()
+  if (blocked || auction.recovery)
+    return (
+      <p className="inline-status">
+        Lances bloqueados por adulteração confirmada.
+      </p>
+    )
+  if (auction.status === 'CANCELLED')
+    return (
+      <p className="inline-status">
+        Este lote foi cancelado e não recebe novos lances.
+      </p>
+    )
   if (!session)
     return (
       <div className="account-panel">

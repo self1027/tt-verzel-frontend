@@ -170,5 +170,7 @@ test('paginates audit evidence and gives tampered event pages precedence', async
   await expect(
     page.getByRole('heading', { name: 'Adulteração detectada', exact: true }),
   ).toBeVisible()
-  await expect(page.getByRole('alert')).toContainText('página de eventos')
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'página de eventos' }),
+  ).toBeVisible()
 })

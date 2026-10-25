@@ -9,11 +9,21 @@ const labels: Record<LifecycleState, string> = {
   CLOSED_NO_BIDS: 'Encerrado sem lances',
 }
 
-export function AuctionStatus({ state }: { state: LifecycleState }) {
+export function AuctionStatus({
+  state,
+  blocked = false,
+}: {
+  state: LifecycleState
+  blocked?: boolean
+}) {
+  const suspended =
+    blocked && ['SCHEDULED', 'LIVE', 'FINALIZING'].includes(state)
   return (
-    <span className={`status status-${state.toLowerCase()}`}>
+    <span
+      className={`status status-${suspended ? 'cancelled' : state.toLowerCase()}`}
+    >
       <span aria-hidden="true" />
-      {labels[state]}
+      {suspended ? 'Bloqueado por adulteração' : labels[state]}
     </span>
   )
 }

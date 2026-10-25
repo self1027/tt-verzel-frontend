@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router'
 import { RequestState } from '@/components/Feedback'
 import { useSyncExternalStore } from 'react'
 import { getAudit, getAuditEvents } from './api'
+import { getAuction } from '@/features/auctions/api/auctions'
+import { AuctionRecoveryNotice } from '@/features/auctions/components/AuctionRecoveryNotice'
+import { auctionKeys } from '@/features/auctions/api/keys'
 function subscribeConnectivity(listener: () => void) {
   window.addEventListener('online', listener)
   window.addEventListener('offline', listener)
@@ -45,6 +48,11 @@ export function AuditPage() {
     retry: false,
     refetchInterval: 15000,
   })
+  const auction = useQuery({
+    queryKey: auctionKeys.detail(id),
+    queryFn: ({ signal }) => getAuction(id, signal),
+    refetchInterval: 5000,
+  })
   const history = useInfiniteQuery({
     queryKey: ['audit-events', id],
     queryFn: ({ signal, pageParam }) => getAuditEvents(id, pageParam, signal),
@@ -77,6 +85,10 @@ export function AuditPage() {
       <Link className="back-link" to={`/auctions/${id}`}>
         Voltar ao lote
       </Link>
+      <AuctionRecoveryNotice
+        auction={auction.data ?? {}}
+        confirmedTampering={state === 'TAMPERED'}
+      />
       <div className="account-heading">
         <div>
           <p className="eyebrow">Auditoria pública</p>

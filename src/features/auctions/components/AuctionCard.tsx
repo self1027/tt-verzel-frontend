@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import type { Auction } from '../api/auctions'
 import { formatCentsToBrl } from '../utils/money'
 import { AuctionStatus } from './AuctionStatus'
+import { DemoScenario } from './DemoScenario'
 
 function safeImageUrl(value: string | null): string | undefined {
   if (!value) return undefined
@@ -55,6 +56,7 @@ export function AuctionCard({ auction }: { auction: Auction }) {
               : 'Lote de leilão'}
           </p>
           <h3>{auction.productSnapshot.title}</h3>
+          <DemoScenario attributes={auction.productSnapshot.attributes} />
           <div className="card-meta">
             <span>
               <span className="meta-label">Lance inicial</span>

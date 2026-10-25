@@ -1,6 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BidForm } from '../components/BidForm'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { Link, useParams } from 'react-router'
 import { ApiError } from '@/api/client'
 import { getAuction, getPublicBids } from '../api/auctions'
@@ -9,6 +13,9 @@ import { formatCentsToBrl } from '../utils/money'
 import { AuctionStatus } from '../components/AuctionStatus'
 import { AuctionRealtime } from '../components/AuctionRealtime'
 import { Countdown } from '../components/Countdown'
+import { AuctionRecoveryNotice } from '../components/AuctionRecoveryNotice'
+import { getAudit } from '@/features/audit/api'
+import { DemoScenario } from '../components/DemoScenario'
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -19,6 +26,19 @@ function formatDate(value: string) {
 
 export function AuctionDetailPage() {
   const { id = '' } = useParams()
+  const client = useQueryClient()
+  const integrity = useQuery({
+    queryKey: ['audit', id],
+    queryFn: ({ signal }) => getAudit(id, signal),
+    enabled: Boolean(id),
+    retry: false,
+    refetchInterval: 10000,
+  })
+  const tampered = integrity.data?.status === 'TAMPERED'
+  useEffect(() => {
+    if (tampered)
+      void client.invalidateQueries({ queryKey: auctionKeys.detail(id) })
+  }, [tampered, integrity.dataUpdatedAt, client, id])
   const [failedImage, setFailedImage] = useState<string>()
   const auctionQuery = useQuery({
     queryKey: auctionKeys.detail(id),
@@ -134,11 +154,19 @@ export function AuctionDetailPage() {
                 Lote · {auction.id.slice(0, 8).toUpperCase()}
               </p>
               <h1>{auction.productSnapshot.title}</h1>
+              <DemoScenario attributes={auction.productSnapshot.attributes} />
             </div>
-            <AuctionStatus state={auction.lifecycleState} />
+            <AuctionStatus
+              state={auction.lifecycleState}
+              blocked={tampered || Boolean(auction.recovery)}
+            />
           </div>
         </section>
         <aside className="detail-aside" aria-label="Valores e prazo do leilão">
+          <AuctionRecoveryNotice
+            auction={auction}
+            confirmedTampering={tampered}
+          />
           <div className="price-panel">
             <p className="eyebrow">
               {currentBid ? 'Lance atual' : 'Lance inicial'}
@@ -164,7 +192,11 @@ export function AuctionDetailPage() {
             </p>
             <div className="panel-rule" />
             <p className="eyebrow">Tempo até o encerramento</p>
-            {serverTime ? (
+            {tampered || auction.recovery ? (
+              <p className="inline-status">
+                Disputa bloqueada por adulteração confirmada.
+              </p>
+            ) : serverTime ? (
               <Countdown
                 endsAt={ending}
                 asOf={serverTime}
@@ -197,6 +229,7 @@ export function AuctionDetailPage() {
           </div>
           <BidForm
             auction={auction}
+            blocked={tampered}
             snapshot={bidPage}
             stale={bidsQuery.isError || auctionQuery.isError}
           />
