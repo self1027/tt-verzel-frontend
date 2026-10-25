@@ -48,6 +48,12 @@ export function ReceiptPage() {
         <>
           <section className="receipt-sheet" aria-label="Dados do arremate">
             <p className="eyebrow">Liquidação confirmada</p>
+            {receipt.integrityCoverage !== 'SELLER_PRODUCT_V2' ? (
+              <p role="note">
+                Comprovante legado ou sem cobertura v2: o vendedor original e o
+                conteúdo do produto não têm garantia criptográfica nesta prova.
+              </p>
+            ) : null}
             <h2>{receipt.productSnapshot.title}</h2>
             <p className="receipt-amount money">
               {formatCentsToBrl(receipt.amountCents)}

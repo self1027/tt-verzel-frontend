@@ -1,7 +1,16 @@
 ﻿import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router'
 import { RequestState } from '@/components/Feedback'
+import { useSyncExternalStore } from 'react'
 import { getAudit, getAuditEvents } from './api'
+function subscribeConnectivity(listener: () => void) {
+  window.addEventListener('online', listener)
+  window.addEventListener('offline', listener)
+  return () => {
+    window.removeEventListener('online', listener)
+    window.removeEventListener('offline', listener)
+  }
+}
 const messages = {
   VERIFIED: {
     title: 'Histórico verificado',
@@ -26,6 +35,10 @@ const messages = {
 }
 export function AuditPage() {
   const { id = '' } = useParams()
+  const online = useSyncExternalStore(
+    subscribeConnectivity,
+    () => navigator.onLine,
+  )
   const verification = useQuery({
     queryKey: ['audit', id],
     queryFn: ({ signal }) => getAudit(id, signal),
@@ -45,7 +58,14 @@ export function AuditPage() {
   const tampered = history.data?.pages.some(
     (page) => 'status' in page && page.status === 'TAMPERED',
   )
-  const state = tampered ? 'TAMPERED' : verification.data?.status
+  const unavailable = !online || verification.isError || verification.isPaused
+  const state = tampered
+    ? 'TAMPERED'
+    : unavailable
+      ? 'VERIFICATION_UNAVAILABLE'
+      : verification.isFetching
+        ? undefined
+        : verification.data?.status
   const message = state ? messages[state] : undefined
   const events = tampered
     ? []
@@ -92,6 +112,29 @@ export function AuditPage() {
           <div>
             <h2 id="verification-title">{message.title}</h2>
             <p>{message.description}</p>
+            {unavailable && verification.dataUpdatedAt > 0 ? (
+              <p role="note">
+                Última resposta armazenada em{' '}
+                {new Date(verification.dataUpdatedAt).toLocaleString('pt-BR')}.
+                Ela não confirma a integridade atual do lote.
+              </p>
+            ) : null}
+            {verification.data?.integrityCoverage === 'SELLER_PRODUCT_V2' ? (
+              <p>
+                Prova v2: inclui o vínculo do vendedor e o conteúdo do produto.
+              </p>
+            ) : verification.data?.integrityCoverage === 'LEGACY_V1' ? (
+              <p role="note">
+                Prova legada v1: não verifica o vendedor original nem o conteúdo
+                do produto. A verificação acima cobre somente o histórico
+                legado.
+              </p>
+            ) : verification.data ? (
+              <p role="note">
+                A cobertura criptográfica do vendedor e do produto está
+                indisponível nesta verificação.
+              </p>
+            ) : null}
             {verification.data ? (
               <p className="muted">
                 Sequência local: {verification.data.localSequence} · Confirmada
