@@ -1,0 +1,29 @@
+.empty-mark {
+  color: var(--action-primary);
+  font-size: 58px;
+  font-weight: 700;
+  letter-spacing: -0.08em;
+}
+.empty-state h2 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+.empty-state p:not(.eyebrow) {
+  max-width: 58ch;
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+}
+.text-button,
+.text-link {
+  padding: 0;
+  border: 0;
+  color: var(--accent-soft);
+  background: none;
+  font-weight: 600;
+  cursor: pointer;
+  text-underline-offset: 4px;
+}
+.text-button:hover,
+.text-link:hover {
+  text-decoration: underline;
+}
