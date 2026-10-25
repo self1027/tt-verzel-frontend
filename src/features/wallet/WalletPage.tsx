@@ -2,6 +2,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from '@/features/auth/session'
 import {
+  centsToBrlInput,
   formatCentsToBrl,
   parseBrlInputToCents,
 } from '@/features/auctions/utils/money'
@@ -24,16 +25,20 @@ export function WalletPage() {
     queryKey: ['private', session.user.id, 'transactions', skip],
     queryFn: ({ signal }) => getTransactions(skip, signal),
   })
-  const action = useMoneyAction(deposit, () => {
-    setAmount('')
-    void client.invalidateQueries({ queryKey: walletKey(session.user.id) })
-    void client.invalidateQueries({
-      queryKey: ['private', session.user.id, 'transactions'],
-    })
-  })
+  const action = useMoneyAction(
+    deposit,
+    () => {
+      setAmount('')
+      void client.invalidateQueries({ queryKey: walletKey(session.user.id) })
+      void client.invalidateQueries({
+        queryKey: ['private', session.user.id, 'transactions'],
+      })
+    },
+    `${session.user.id}:deposit`,
+  )
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const cents = parseBrlInputToCents(amount)
+    const cents = action.intentCents ?? parseBrlInputToCents(amount)
     if (!cents || BigInt(cents) <= 0n) {
       setValidation(
         'Informe um valor positivo em reais com até duas casas decimais.',
@@ -129,7 +134,11 @@ export function WalletPage() {
             Valor do depósito (R$)
             <input
               inputMode="decimal"
-              value={amount}
+              value={
+                action.intentCents
+                  ? centsToBrlInput(action.intentCents)
+                  : amount
+              }
               onChange={(e) => setAmount(e.target.value)}
               disabled={action.pending || action.uncertain}
               aria-describedby="deposit-feedback"

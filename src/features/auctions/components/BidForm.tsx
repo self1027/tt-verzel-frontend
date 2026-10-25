@@ -84,13 +84,17 @@ function BidderForm({
     void client.invalidateQueries({ queryKey: positionKey(userId, auction.id) })
     void client.invalidateQueries({ queryKey: walletKey(userId) })
   }
-  const action = useMoneyAction(async (cents, key) => {
-    try {
-      return await placeBid(auction.id, cents, key)
-    } finally {
-      resync()
-    }
-  }, resync)
+  const action = useMoneyAction(
+    async (cents, key) => {
+      try {
+        return await placeBid(auction.id, cents, key)
+      } finally {
+        resync()
+      }
+    },
+    resync,
+    `${userId}:bid:${auction.id}`,
+  )
   const leading = Boolean(
     position.data?.isLeading && position.data.id === snapshot?.currentBid?.id,
   )
@@ -114,9 +118,9 @@ function BidderForm({
   )
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const cents = parseBrlInputToCents(
-      amount || (minimum ? centsToBrlInput(minimum) : ''),
-    )
+    const cents =
+      action.intentCents ??
+      parseBrlInputToCents(amount || (minimum ? centsToBrlInput(minimum) : ''))
     if (
       !cents ||
       BigInt(cents) <= 0n ||
@@ -194,7 +198,9 @@ function BidderForm({
         Seu lance (R$)
         <input
           inputMode="decimal"
-          value={amount}
+          value={
+            action.intentCents ? centsToBrlInput(action.intentCents) : amount
+          }
           placeholder={minimum ? centsToBrlInput(minimum) : ''}
           disabled={action.pending || action.uncertain || !ready}
           onChange={(e) => setAmount(e.target.value)}
