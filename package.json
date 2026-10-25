@@ -14,6 +14,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:recruiter": "playwright test --config playwright.recruiter.config.ts",
+    "test:recruiter:mcp": "node scripts/recruiter-mcp.mjs",
+    "test:recruiter:report": "playwright show-report playwright-report/recruiter",
     "format": "prettier --write .",
     "generate:api-types": "openapi-typescript contracts/openapi.json -o src/api/generated/schema.d.ts"
   },

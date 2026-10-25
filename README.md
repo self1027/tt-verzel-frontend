@@ -4,6 +4,11 @@ Frontend de uma plataforma de leilões: explore lotes, participe de disputas, ac
 
 Construído com **React 19, TypeScript e Vite**, com interface responsiva, temas claro e escuro e integração REST e Socket.IO.
 
+Para avaliar o desafio, consulte o [guia unificado do recrutador no backend](https://github.com/self1027/tt-verzel-backend/blob/main/docs/guia-recrutador.md).
+Ele reúne requisitos do PDF, roteiro manual, comandos e resultados da validação.
+Os repositórios são independentes e podem ficar em quaisquer diretórios; a integração
+usa o endereço configurado da API.
+
 ## Preview
 
 ### Vitrine de leilões
@@ -85,7 +90,34 @@ Variáveis `VITE_*` são públicas no navegador. A sessão fica apenas em memór
 | `npm run format`             | Aplicar Prettier                                       |
 | `npm run generate:api-types` | Regenerar tipos a partir de `contracts/openapi.json`   |
 
-O Playwright está configurado para **Microsoft Edge** e inicia o Vite automaticamente na porta 5173. Instale o Edge ou ajuste o `channel` em [`playwright.config.ts`](playwright.config.ts) para um navegador disponível. Os testes E2E usam respostas de API simuladas.
+O Playwright padrão está configurado para **Microsoft Edge** e inicia o Vite automaticamente na porta 5173. Instale o Edge ou ajuste o `channel` em [`playwright.config.ts`](playwright.config.ts) para um navegador disponível. Os testes de `test:e2e` usam respostas de API simuladas.
+
+### Avaliação com API real
+
+Com frontend e backend já em execução em `localhost:5173` e `localhost:3000`:
+
+```sh
+npm run test:recruiter:mcp
+npm run test:recruiter
+npm run test:recruiter:report
+```
+
+O primeiro comando usa o **Playwright MCP da Microsoft** para percorrer páginas públicas,
+gravar snapshots e conferir a largura mobile. O segundo executa filtros/temas,
+busca/importação e gestão pela interface e uma disputa entre dois licitantes até
+a liquidação. Esses testes usam a API real; o fluxo completo leva cerca de três minutos.
+
+A jornada cria lotes próprios e deposita R$ 10,00 simulados em cada licitante,
+com arremate de R$ 1,10; preserva os registros para consulta. Exige seed, witness
+operacional e acesso do backend ao DummyJSON para importar um produto novo.
+As senhas padrão são as do README do backend; use as variáveis `SEED_*` no
+terminal se foram personalizadas. A sessão fica em memória; recarregar exige login.
+
+`RECRUITER_FRONTEND_URL` e `RECRUITER_API_URL` alteram os endereços dos testes;
+`VITE_API_BASE_URL` deve apontar à mesma API. Para outro navegador, configure
+`PLAYWRIGHT_CHANNEL` e, se necessário, `PLAYWRIGHT_EXECUTABLE_PATH`.
+Os artefatos ficam em `test-results/recruiter-mcp/` e `playwright-report/recruiter/`,
+ignorados pelo Git; traces com credenciais são desativados na jornada real.
 
 ## Organização
 
@@ -120,4 +152,5 @@ O alias `@/` aponta para `src/`.
 - [Checkpoints de implementação e limites da validação](docs/implementation-checkpoints.md)
 - [Workflow de design](docs/design-workflow.md)
 
-A validação ponta a ponta com backend real e o deploy permanecem pendentes, conforme os checkpoints de implementação.
+A validação local com backend real está disponível nos comandos `test:recruiter*`
+e documentada no guia do recrutador. O deploy público continua sem validação nesta curadoria.
