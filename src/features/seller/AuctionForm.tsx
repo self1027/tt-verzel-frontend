@@ -39,7 +39,15 @@ export function AuctionForm({
     setError('')
     try {
       const body = auctionInput(
-        { productSnapshotId: product.id, starting, increment, starts, ends },
+        {
+          productSnapshotId: product.id,
+          starting,
+          increment,
+          startsDate: starts.slice(0, 10),
+          startsTime: starts.slice(11, 16),
+          endsDate: ends.slice(0, 10),
+          endsTime: ends.slice(11, 16),
+        },
         Date.now(),
       )
       setPending(true)
@@ -90,28 +98,72 @@ export function AuctionForm({
           disabled={pending || uncertain}
         />
       </label>
-      <label>
-        Início do lote
-        <input
-          type="datetime-local"
-          step="1"
-          value={starts}
-          onChange={(e) => setStarts(e.target.value)}
-          required
-          disabled={pending || uncertain}
-        />
-      </label>
-      <label>
-        Fim do lote
-        <input
-          type="datetime-local"
-          step="1"
-          value={ends}
-          onChange={(e) => setEnds(e.target.value)}
-          required
-          disabled={pending || uncertain}
-        />
-      </label>
+      <fieldset className="auction-schedule">
+        <legend>Início do lote</legend>
+        <label>
+          Data
+          <input
+            aria-label="Data de início do lote"
+            type="date"
+            lang="pt-BR"
+            value={starts.slice(0, 10)}
+            onChange={(e) =>
+              setStarts(`${e.target.value}T${starts.slice(11, 16) || '12:00'}`)
+            }
+            required
+            disabled={pending || uncertain}
+          />
+        </label>
+        <label>
+          Hora
+          <input
+            aria-label="Hora de início do lote"
+            type="time"
+            lang="pt-BR"
+            value={starts.slice(11, 16)}
+            onChange={(e) =>
+              setStarts(`${starts.slice(0, 10)}T${e.target.value}`)
+            }
+            required
+            disabled={pending || uncertain}
+          />
+        </label>
+      </fieldset>
+      <fieldset className="auction-schedule">
+        <legend>Fim do lote</legend>
+        <label>
+          Data
+          <input
+            aria-label="Data de fim do lote"
+            type="date"
+            lang="pt-BR"
+            min={starts.slice(0, 10) || undefined}
+            value={ends.slice(0, 10)}
+            onChange={(e) =>
+              setEnds(`${e.target.value}T${ends.slice(11, 16) || '12:00'}`)
+            }
+            required
+            disabled={pending || uncertain}
+          />
+        </label>
+        <label>
+          Hora
+          <input
+            aria-label="Hora de fim do lote"
+            type="time"
+            lang="pt-BR"
+            min={
+              ends.slice(0, 10) === starts.slice(0, 10)
+                ? starts.slice(11, 16)
+                : undefined
+            }
+            value={ends.slice(11, 16)}
+            onChange={(e) => setEnds(`${ends.slice(0, 10)}T${e.target.value}`)}
+            required
+            disabled={pending || uncertain}
+          />
+        </label>
+      </fieldset>
       <p className="muted">
         Horários no fuso do seu dispositivo. A plataforma confirma os horários e
         a elegibilidade do lote.

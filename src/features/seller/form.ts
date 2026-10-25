@@ -5,8 +5,10 @@ export function auctionInput(
     productSnapshotId: string
     starting: string
     increment: string
-    starts: string
-    ends: string
+    startsDate: string
+    startsTime: string
+    endsDate: string
+    endsTime: string
   },
   now: number,
 ): components['schemas']['CreateAuction'] {
@@ -18,8 +20,8 @@ export function auctionInput(
     throw new Error(
       'Informe valores positivos em reais com até duas casas decimais.',
     )
-  const starts = Date.parse(fields.starts),
-    ends = Date.parse(fields.ends)
+  const starts = Date.parse(`${fields.startsDate}T${fields.startsTime}`),
+    ends = Date.parse(`${fields.endsDate}T${fields.endsTime}`)
   if (
     !Number.isFinite(starts) ||
     !Number.isFinite(ends) ||
