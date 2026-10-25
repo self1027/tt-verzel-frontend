@@ -12,13 +12,14 @@ export function ProductPicker({
   const session = useSession()!
   const client = useQueryClient()
   const [source, setSource] = useState<'local' | 'external'>('local')
+  const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [skip, setSkip] = useState(0)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const local = useQuery({
-    queryKey: ['private', session.user.id, 'products', skip],
-    queryFn: ({ signal }) => getProducts(skip, signal),
+    queryKey: ['private', session.user.id, 'products', search, skip],
+    queryFn: ({ signal }) => getProducts(skip, signal, search),
     enabled: source === 'local',
   })
   const external = useQuery({
@@ -31,10 +32,13 @@ export function ProductPicker({
   const page = active.data
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
     setSkip(0)
-    setSearch(String(data.get('search')).trim())
-    if (String(data.get('search')).trim() === search) void external.refetch()
+    const query = searchInput.trim()
+    if (query === search) {
+      if (source === 'local') void local.refetch()
+      else void external.refetch()
+    }
+    else setSearch(query)
   }
   async function importItem(id: number) {
     if (pending) return
@@ -88,9 +92,33 @@ export function ProductPicker({
       </div>
       {source === 'external' ? (
         <form className="form-panel product-search" onSubmit={submit}>
+          <p className="muted">
+            A busca externa aceita termos em inglês; a tradução automática está
+            registrada como débito técnico.
+          </p>
           <label>
             Buscar produto
-            <input name="search" required maxLength={200} />
+            <input
+              name="search"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.currentTarget.value)}
+              required
+              maxLength={200}
+            />
+          </label>
+          <button className="button button-filter">Buscar produtos</button>
+        </form>
+      ) : null}
+      {source === 'local' ? (
+        <form className="form-panel product-search" onSubmit={submit}>
+          <label>
+            Buscar produto importado
+            <input
+              name="search"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.currentTarget.value)}
+              maxLength={200}
+            />
           </label>
           <button className="button button-filter">Buscar produtos</button>
         </form>
@@ -106,7 +134,11 @@ export function ProductPicker({
         </p>
       ) : null}
       {page?.total === 0 ? (
-        <p className="muted">Nenhum produto encontrado nesta consulta.</p>
+        <p className="muted">
+          {source === 'external'
+            ? 'A API externa não encontrou produtos para esta busca.'
+            : 'Nenhum produto importado corresponde a esta busca.'}
+        </p>
       ) : null}
       {source === 'external' && active.error ? (
         <p className="muted">

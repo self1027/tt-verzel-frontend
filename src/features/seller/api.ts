@@ -8,9 +8,9 @@ export async function getSellerAuctions(skip: number, signal?: AbortSignal) {
   if (!r.data) throwApiError(r.response.status, r.error)
   return r.data
 }
-export async function getProducts(skip: number, signal?: AbortSignal) {
+export async function getProducts(skip: number, signal?: AbortSignal, q = '') {
   const r = await api.GET('/catalog/products', {
-    params: { query: { skip, limit: 20 } },
+    params: { query: { skip, limit: 20, ...(q ? { q } : {}) } },
     signal,
   })
   if (!r.data) throwApiError(r.response.status, r.error)
